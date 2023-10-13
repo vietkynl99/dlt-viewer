@@ -263,6 +263,7 @@ private:
     void ControlServiceRequest(EcuItem* ecuitem, int service_id );
     void SendInjection(EcuItem* ecuitem);
 
+    void controlMessage_SendRawDataSerialPort(EcuItem* ecuitem, QString data);
     void controlMessage_SendControlMessage(EcuItem* ecuitem,DltMessage &msg, QString appid, QString contid);
     void controlMessage_WriteControlMessage(DltMessage &msg, QString appid, QString contid);
     void controlMessage_SetLogLevel(EcuItem* ecuitem, QString app, QString con,int log_level);
@@ -416,6 +417,8 @@ private slots:
     void on_pluginWidget_itemExpanded(QTreeWidgetItem* item);
 
     void on_pluginWidget_pluginPriorityChanged(const QString name, int prio);
+
+    void onLineEditSendDataTextChanged();
 
 // File methods
 

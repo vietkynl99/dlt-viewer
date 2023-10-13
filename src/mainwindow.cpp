@@ -540,6 +540,9 @@ void MainWindow::initSignalConnections()
         ui->exploreView->scrollTo(
                     proxyModel->mapFromSource(fsModel->index(recentFiles[0])));
     });
+
+    // connect send data signal
+    connect(ui->lineEditSendData, SIGNAL(returnPressed()), this, SLOT(onLineEditSendDataTextChanged()));
 }
 
 void MainWindow::initSearchTable()
@@ -4555,6 +4558,20 @@ void MainWindow::controlMessage_ReceiveControlMessage(EcuItem *ecuitem, QDltMsg 
     } // switch
 }
 
+void MainWindow::controlMessage_SendRawDataSerialPort(EcuItem *ecuitem, QString data)
+{
+    qDebug() << "Send data to serial port: " << data;
+    if (ecuitem->m_serialport && ecuitem->m_serialport->isOpen())
+    {
+        ecuitem->m_serialport->write(data.toUtf8().data());
+        ecuitem->m_serialport->write("\r\n");
+    }
+    else
+    {
+        qDebug() << "ECU Serial Port is not connected !!";
+    }
+}
+
 void MainWindow::controlMessage_SendControlMessage(EcuItem* ecuitem,DltMessage &msg, QString appid, QString contid)
 {
     QByteArray data;
@@ -5736,6 +5753,37 @@ void MainWindow::on_configWidget_itemSelectionChanged()
 void MainWindow::on_pluginWidget_pluginPriorityChanged(const QString name, int prio)
 {
     pluginManager.setPluginPriority(name, prio);
+}
+
+void MainWindow::onLineEditSendDataTextChanged()
+{
+    QString text = ui->lineEditSendData->text();
+    ui->lineEditSendData->clear();
+    if (text.isEmpty())
+    {
+        return;
+    }
+
+    bool hasEcuConnected = false;
+    for (int num = 0; num < project.ecu->topLevelItemCount(); num++)
+    {
+        EcuItem *ecuitem = (EcuItem *)project.ecu->topLevelItem(num);
+        if (ecuitem->connected)
+        {
+            if (ecuitem->interfacetype != EcuItem::INTERFACETYPE_SERIAL_ASCII)
+            {
+                QMessageBox::warning(0, QString("DLT Viewer"), QString("Sending data is only supported in Serial ASCII mode!"));
+                return;
+            }
+            hasEcuConnected = true;
+            controlMessage_SendRawDataSerialPort(ecuitem, text);
+        }
+    }
+
+    if (!hasEcuConnected)
+    {
+        QMessageBox::warning(0, QString("DLT Viewer"), QString("No ECU selected in configuration!"));
+    }
 }
 
 void MainWindow::updateScrollButton()
