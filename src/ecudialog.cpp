@@ -280,12 +280,27 @@ void EcuDialog::setSerialPortList()
 {
     ui->comboBoxPortSerial->clear();
 
-    QList<QSerialPortInfo> 	availablePorts  = QSerialPortInfo::availablePorts();
+    QList<QSerialPortInfo> portList = QSerialPortInfo::availablePorts();
+    std::sort(portList.begin(), portList.end(), [](const QSerialPortInfo &port1, const QSerialPortInfo &port2)
+              {
+        QString str1 = port1.portName();
+        QString str2 = port2.portName();
+        QRegularExpression regex("(\\d+)");
+        QRegularExpressionMatch match1 = regex.match(str1);
+        QRegularExpressionMatch match2 = regex.match(str2);
+
+        if (match1.hasMatch() && match2.hasMatch()) {
+            int num1 = match1.captured(1).toInt();
+            int num2 = match2.captured(1).toInt();
+            return num1 < num2;
+        }
+        return str1 < str2; });
+
     qDebug() << "portName" << "description" << "manufacturer" << "serialNumber" << "productIdentifier" << "vendorIdentifier" << "systemLocation";
-    for(int num = 0; num<availablePorts.length();num++)
+    for(int num = 0; num<portList.length();num++)
     {
-        qDebug() << availablePorts[num].portName() << availablePorts[num].description() << availablePorts[num].manufacturer() << availablePorts[num].serialNumber() << availablePorts[num].productIdentifier() << availablePorts[num].vendorIdentifier() << availablePorts[num].systemLocation();
-        ui->comboBoxPortSerial->addItem(availablePorts[num].portName());
+        qDebug() << portList[num].portName() << portList[num].description() << portList[num].manufacturer() << portList[num].serialNumber() << portList[num].productIdentifier() << portList[num].vendorIdentifier() << portList[num].systemLocation();
+        ui->comboBoxPortSerial->addItem(portList[num].portName());
     }
 
 }
