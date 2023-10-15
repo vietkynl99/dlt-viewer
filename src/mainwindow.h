@@ -205,6 +205,7 @@ private:
     QStringList recentUDPPorts;
     QString recentEthIF;
     QStringList recent_multicastAddresses;
+    QString recentSerialPortName;
 
     /* for UDP live receive functions */
     QHostAddress UDPsender; // in readdatagramm
@@ -320,6 +321,7 @@ private:
     void setCurrentEthIF(const QString &EthIfName);
     void setMcast(bool mcast);
     void setInterfaceTypeSelection(int selectindex);
+    void setCurrentSerialPortName(const QString &portName);
 
     void sendUpdates(EcuItem* ecuitem);
 

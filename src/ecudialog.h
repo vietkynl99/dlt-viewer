@@ -61,6 +61,7 @@ public:
 
     void setHostnameList(QStringList hostnames);
     void setSerialPortList();
+    void setSerialPortName(QString portName);
     void setIPPortList(QStringList ports);
     void setUDPPortList(QStringList ports);
     void setNetworkIFList(QString lastsetting);

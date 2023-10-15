@@ -305,6 +305,29 @@ void EcuDialog::setSerialPortList()
 
 }
 
+void EcuDialog::setSerialPortName(QString portName)
+{
+    if (ui->comboBoxPortSerial->count() > 0)
+    {
+        if (portName.isEmpty())
+        {
+            ui->comboBoxPortSerial->setCurrentIndex(0);
+        }
+        else
+        {
+            int index = ui->comboBoxPortSerial->findText(portName);
+            if (index != -1)
+            {
+                ui->comboBoxPortSerial->setCurrentIndex(index);
+            }
+            else
+            {
+                ui->comboBoxPortSerial->setCurrentIndex(0);
+            }
+        }
+    }
+}
+
 void EcuDialog::setIPPortList(QStringList ports)
 {
     ui->comboBoxPortIP->clear();
