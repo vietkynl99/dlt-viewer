@@ -226,6 +226,8 @@ MainWindow::~MainWindow()
     delete dltIndexer;
     delete m_shortcut_searchnext;
     delete m_shortcut_searchprev;
+    delete mShortCutHome;
+    delete mShortCutEnd;
     delete newCompleter;
     delete sortProxyModel;
 }
@@ -522,6 +524,12 @@ void MainWindow::initSignalConnections()
     connect(m_shortcut_searchnext, SIGNAL(activated()), searchDlg, SLOT( on_pushButtonNext_clicked() ) );
     m_shortcut_searchprev = new QShortcut(QKeySequence("F2"), this);
     connect(m_shortcut_searchprev, SIGNAL(activated()), searchDlg, SLOT( on_pushButtonPrevious_clicked() ) );
+
+    /* Other shortcut */
+    mShortCutHome = new QShortcut(QKeySequence("Home"), this);
+    connect(mShortCutHome, SIGNAL(activated()), this, SLOT(onShortcutHomePressed()));
+    mShortCutEnd = new QShortcut(QKeySequence("End"), this);
+    connect(mShortCutEnd, SIGNAL(activated()), this, SLOT(onShortcutEndPressed()));
 
     connect(ui->tableView->horizontalHeader(), SIGNAL(sectionDoubleClicked(int)), this, SLOT(sectionInTableDoubleClicked(int)));
 
@@ -5790,6 +5798,16 @@ void MainWindow::onLineEditSendDataTextChanged()
     {
         QMessageBox::warning(0, QString("DLT Viewer"), QString("No ECU selected in configuration!"));
     }
+}
+
+void MainWindow::onShortcutHomePressed()
+{
+    ui->tableView->scrollToTop();
+}
+
+void MainWindow::onShortcutEndPressed()
+{
+    ui->tableView->scrollToBottom();
 }
 
 void MainWindow::updateScrollButton()

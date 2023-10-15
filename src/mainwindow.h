@@ -149,6 +149,10 @@ private:
     QShortcut *m_shortcut_searchnext;
     QShortcut *m_shortcut_searchprev;
 
+    /* Other shortcut */
+    QShortcut *mShortCutHome;
+    QShortcut *mShortCutEnd;
+
     /* Export */
     ExporterDialog exporterDialog;
 
@@ -422,8 +426,11 @@ private slots:
 
     void onLineEditSendDataTextChanged();
 
-// File methods
+private slots:
+    void onShortcutHomePressed();
+    void onShortcutEndPressed();
 
+// File methods
 private slots:
 
     void on_action_menuFile_New_triggered();
