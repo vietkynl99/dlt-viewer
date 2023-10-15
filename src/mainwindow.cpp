@@ -7837,6 +7837,11 @@ void MainWindow::on_actionAutoScroll_triggered(bool checked)
     // Mapping: button to variable
     settings->autoScroll = (checked?Qt::Checked:Qt::Unchecked);
 
+    if (settings->autoScroll)
+    {
+        ui->tableView->scrollToBottom();
+    }
+
     if (autoScrollOld!=settings->autoScroll)
         settingsDlg->writeSettings(this);
 
