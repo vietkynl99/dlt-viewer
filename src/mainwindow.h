@@ -576,6 +576,7 @@ private slots:
     void applyConfigEnabled(bool enabled);
     void stateChangedIP(QAbstractSocket::SocketState socketState);
     void stateChangedSerial(bool dsrChanged);
+    void onSerialPortErrorOccurred(QSerialPort::SerialPortError error);
     void sectionInTableDoubleClicked(int logicalIndex);
     void on_actionJump_To_triggered();
     void on_actionAutoScroll_triggered(bool checked);

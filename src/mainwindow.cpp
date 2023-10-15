@@ -3600,6 +3600,7 @@ void MainWindow::connectECU(EcuItem *ecuitem, bool force)
                     QThread::msleep(10);
                     connect(ecuitem->m_serialport, SIGNAL(readyRead()), this, SLOT(readyRead()));
                     connect(ecuitem->m_serialport, SIGNAL(dataTerminalReadyChanged(bool)), this, SLOT(stateChangedSerial(bool)));
+                    connect(ecuitem->m_serialport, SIGNAL(errorOccurred(QSerialPort::SerialPortError)), this, SLOT(onSerialPortErrorOccurred(QSerialPort::SerialPortError)));
                     // ecuitem->m_serialport->waitForReadyRead(10);
                 }
             }
@@ -6084,6 +6085,60 @@ void MainWindow::stateChangedSerial(bool dsrChanged)
             {
                 pluginManager.stateChanged(num, QDltConnection::QDltConnectionOffline, ecuitem->getHostname());
             }
+        }
+    }
+}
+
+void MainWindow::onSerialPortErrorOccurred(QSerialPort::SerialPortError error)
+{
+    if (error == QSerialPort::NoError)
+    {
+        return;
+    }
+    qDebug() << "Serial connection error: Error code " + QString::number(error);
+    switch (error)
+    {
+    case QSerialPort::DeviceNotFoundError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Device not found");
+        break;
+    case QSerialPort::PermissionError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Can not open the device");
+        break;
+    case QSerialPort::OpenError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Device has already been opened");
+        break;
+    // case QSerialPort::NotOpenError:
+    // QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: The device is not open");
+    // break;
+    case QSerialPort::WriteError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Error occurred while writing the data");
+        break;
+    case QSerialPort::ReadError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Error occurred while reading the data");
+        break;
+    case QSerialPort::ResourceError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Resource error");
+        break;
+    case QSerialPort::UnsupportedOperationError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Unsupported operation");
+        break;
+    case QSerialPort::TimeoutError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Timeout error");
+        break;
+    case QSerialPort::UnknownError:
+        QMessageBox::critical(0, QString("DLT Viewer"), "Serial connection error: Unknown error");
+        break;
+    default:
+        break;
+    }
+    // close connection
+    for (int num = 0; num < project.ecu->topLevelItemCount(); num++)
+    {
+        EcuItem *ecuitem = (EcuItem *)project.ecu->topLevelItem(num);
+        if (ecuitem->connected && (ecuitem->interfacetype == EcuItem::INTERFACETYPE_SERIAL_DLT ||
+                                   ecuitem->interfacetype == EcuItem::INTERFACETYPE_SERIAL_ASCII))
+        {
+            disconnectECU(ecuitem);
         }
     }
 }
