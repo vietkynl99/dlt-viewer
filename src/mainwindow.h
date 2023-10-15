@@ -42,13 +42,12 @@
 #include "sortfilterproxymodel.h"
 #include "ui_mainwindow.h"
 
-
 /**
  * When ecu items buffer size exceeds this while using
  * serial connection, it will be considered corrupted.
  **/
 
-#define DLT_BUFFER_CORRUPT_TRESHOLD 4* 1024
+#define DLT_BUFFER_CORRUPT_TRESHOLD 4 * 1024
 
 /**
  * @brief Namespace to contain the toolbar positions.
@@ -58,24 +57,26 @@
  * to those below, to make it obvious why the numbering scheme is
  * leaping over some numbers.
  */
-namespace ToolbarPosition {
+namespace ToolbarPosition
+{
     /**
      * @brief Main Toolbar button positions.
      * These are static thorough the program run time.
      */
-    enum MainToolbarPosition {
-        NewDltFile      = 0,
-        OpenDltFile     = 1,
-        Clear           = 2,
-        SaveDltFile     = 3,
+    enum MainToolbarPosition
+    {
+        NewDltFile = 0,
+        OpenDltFile = 1,
+        Clear = 2,
+        SaveDltFile = 3,
         SaveProjectFile = 4,
         // Separator    = 5,
-        ConnectAll      = 6,
-        DisconnectAll   = 7,
+        ConnectAll = 6,
+        DisconnectAll = 7,
         // Separator    = 8,
-        Settings        = 9,
+        Settings = 9,
         // Separator    = 10,
-        AutoScroll      = 11
+        AutoScroll = 11
     };
 
     /**
@@ -86,13 +87,14 @@ namespace ToolbarPosition {
      * enum to identify these actions later, you need to use
      * SearchToolbarPosition::FindXXX + 1.
      */
-    enum SearchToolbarPosition {
-        Search          = 0,
-        Regexp          = 1,
-        SearchList      = 2,
+    enum SearchToolbarPosition
+    {
+        Search = 0,
+        Regexp = 1,
+        SearchList = 2,
         // Separator    = 3,
-        FindPrevious    = 4,
-        FindNext        = 5
+        FindPrevious = 4,
+        FindNext = 5
     };
 }
 
@@ -101,7 +103,8 @@ extern "C"
 #include "dlt_common.h"
 }
 
-namespace Ui {
+namespace Ui
+{
     class MainWindow;
 }
 
@@ -181,30 +184,47 @@ private:
     QStringList autoloadPluginsVersionStrings;
 
     /* String List Containing Search History */
-    enum { MaxSearchHistory = 20 };
+    enum
+    {
+        MaxSearchHistory = 20
+    };
     QAction *searchHistoryActs[MaxSearchHistory];
     QStringList searchHistory;
 
-
     /* Recent files */
-    enum { MaxRecentFiles = 5 };
+    enum
+    {
+        MaxRecentFiles = 5
+    };
     QAction *recentFileActs[MaxRecentFiles];
     QStringList recentFiles;
 
     /* Recent projects */
-    enum { MaxRecentProjects = 5 };
+    enum
+    {
+        MaxRecentProjects = 5
+    };
     QAction *recentProjectActs[MaxRecentProjects];
     QStringList recentProjects;
 
     /* Recent filters */
-    enum { MaxRecentFilters = 5 };
+    enum
+    {
+        MaxRecentFilters = 5
+    };
     QAction *recentFiltersActs[MaxRecentFilters];
     QStringList recentFilters;
 
     /* Recent hostnames and ports */
-    enum { MaxRecentHostnames = 10 };
+    enum
+    {
+        MaxRecentHostnames = 10
+    };
     QStringList recentHostnames;
-    enum { MaxRecentPorts = 10 };
+    enum
+    {
+        MaxRecentPorts = 10
+    };
     QStringList recentIPPorts;
     QStringList recentUDPPorts;
     QString recentEthIF;
@@ -213,7 +233,7 @@ private:
 
     /* for UDP live receive functions */
     QHostAddress UDPsender; // in readdatagramm
-    quint16 senderPort; // in readdatagramm
+    quint16 senderPort;     // in readdatagramm
 
     /* used in ::read() */
     QByteArray data;
@@ -250,42 +270,42 @@ private:
 
     /* general functions */
 
-    void getSelectedItems(EcuItem **ecuitem,ApplicationItem** appitem,ContextItem** conitem);
+    void getSelectedItems(EcuItem **ecuitem, ApplicationItem **appitem, ContextItem **conitem);
 
     /**
-        * @brief Reload the complete log file
-        * @param update if this parameter is false, the file is loaded the first time, if true the reload is performed because of a changed configuration
-        *
-        */
+     * @brief Reload the complete log file
+     * @param update if this parameter is false, the file is loaded the first time, if true the reload is performed because of a changed configuration
+     *
+     */
     void reloadLogFileStop();
-    void reloadLogFile(bool update=false, bool multithreaded = true);
+    void reloadLogFile(bool update = false, bool multithreaded = true);
 
     void reloadLogFileDefaultFilter();
 
-    void exportSelection(bool ascii,bool file,DltExporter::DltExportFormat format);
+    void exportSelection(bool ascii, bool file, DltExporter::DltExportFormat format);
     void exportSelection_searchTable(DltExporter::DltExportFormat format);
 
-    void ControlServiceRequest(EcuItem* ecuitem, int service_id );
-    void SendInjection(EcuItem* ecuitem);
+    void ControlServiceRequest(EcuItem *ecuitem, int service_id);
+    void SendInjection(EcuItem *ecuitem);
 
-    void controlMessage_SendRawDataSerialPort(EcuItem* ecuitem, QString data);
-    void controlMessage_SendControlMessage(EcuItem* ecuitem,DltMessage &msg, QString appid, QString contid);
+    void controlMessage_SendRawDataSerialPort(EcuItem *ecuitem, QString data);
+    void controlMessage_SendControlMessage(EcuItem *ecuitem, DltMessage &msg, QString appid, QString contid);
     void controlMessage_WriteControlMessage(DltMessage &msg, QString appid, QString contid);
-    void controlMessage_SetLogLevel(EcuItem* ecuitem, QString app, QString con,int log_level);
-    void controlMessage_SetDefaultLogLevel(EcuItem* ecuitem, int status);
-    void controlMessage_SetTraceStatus(EcuItem* ecuitem,QString app, QString con,int status);
-    void controlMessage_SetDefaultTraceStatus(EcuItem* ecuitem, int status);
-    void controlMessage_SetVerboseMode(EcuItem* ecuitem, int mode);
-    void controlMessage_SetTimingPackets(EcuItem* ecuitem, bool enable);
-    void controlMessage_GetSoftwareVersion(EcuItem* ecuitem);
-    void controlMessage_GetLogInfo(EcuItem* ecuitem);
-    void controlMessage_ReceiveControlMessage(EcuItem *ecuitem,QDltMsg &msg);
-    void controlMessage_SetContext(EcuItem *ecuitem, QString apid, QString ctid,QString ctdescription,int log_level,int trace_status);
+    void controlMessage_SetLogLevel(EcuItem *ecuitem, QString app, QString con, int log_level);
+    void controlMessage_SetDefaultLogLevel(EcuItem *ecuitem, int status);
+    void controlMessage_SetTraceStatus(EcuItem *ecuitem, QString app, QString con, int status);
+    void controlMessage_SetDefaultTraceStatus(EcuItem *ecuitem, int status);
+    void controlMessage_SetVerboseMode(EcuItem *ecuitem, int mode);
+    void controlMessage_SetTimingPackets(EcuItem *ecuitem, bool enable);
+    void controlMessage_GetSoftwareVersion(EcuItem *ecuitem);
+    void controlMessage_GetLogInfo(EcuItem *ecuitem);
+    void controlMessage_ReceiveControlMessage(EcuItem *ecuitem, QDltMsg &msg);
+    void controlMessage_SetContext(EcuItem *ecuitem, QString apid, QString ctid, QString ctdescription, int log_level, int trace_status);
     void controlMessage_SetApplication(EcuItem *ecuitem, QString apid, QString appdescription);
     void controlMessage_Marker();
 
-    void filterDialogRead(FilterDialog &dlg,FilterItem* item);
-    void filterDialogWrite(FilterDialog &dlg,FilterItem* item);
+    void filterDialogRead(FilterDialog &dlg, FilterItem *item);
+    void filterDialogWrite(FilterDialog &dlg, FilterItem *item);
     void filterUpdate();
 
     void loadPlugins();
@@ -296,7 +316,7 @@ private:
     void versionString(QDltMsg &msg);
     void pluginsAutoload(QString version);
 
-    void connectECU(EcuItem *ecuitem,bool force = false);
+    void connectECU(EcuItem *ecuitem, bool force = false);
     void disconnectECU(EcuItem *ecuitem);
     void checkConnectionState();
     void read(EcuItem *ecuitem);
@@ -327,7 +347,7 @@ private:
     void setInterfaceTypeSelection(int selectindex);
     void setCurrentSerialPortName(const QString &portName);
 
-    void sendUpdates(EcuItem* ecuitem);
+    void sendUpdates(EcuItem *ecuitem);
 
     bool anyFiltersEnabled();
 
@@ -351,8 +371,8 @@ private:
     QString GetConnectionType(int iTypeNumber);
 
     QStringList getAvailableSerialPorts();
-    QStringList getAvailableIPPorts() {return { "3490"};} // DLT standard port
-    QStringList getAvailableUDPPorts() {return { "3490"};} // DLT standard port
+    QStringList getAvailableIPPorts() { return {"3490"}; }  // DLT standard port
+    QStringList getAvailableUDPPorts() { return {"3490"}; } // DLT standard port
     QStringList getAvailableNetworkInterfaces();
 
     void deleteactualFile();
@@ -360,13 +380,13 @@ private:
     int nearest_line(int line);
     bool jump_to_line(int line);
 
- /**
+    /**
      * @brief ErrorMessage
      * @param String which is shown as MessageBox, if we are not in silent mode.
      *  In Silent Mode, it is printed on the console, which only works in Windows DEbug or under Linux Shells
      *
      */
-    void ErrorMessage(QMessageBox::Icon level, QString title,  QString message);
+    void ErrorMessage(QMessageBox::Icon level, QString title, QString message);
 
     void clearSelection();
     void saveSelection();
@@ -386,10 +406,10 @@ private:
     /* Get path from explorerView model index */
     QString getPathFromExplorerViewIndexModel(const QModelIndex &proxyIndex);
 
-    void writeDLTMessageToFile(QByteArray &bufferHeader,char*bufferPayload,quint32 bufferPayloadSize,EcuItem* ecuitem,quint32 sec=0,quint32 use=0);
+    void writeDLTMessageToFile(QByteArray &bufferHeader, char *bufferPayload, quint32 bufferPayloadSize, EcuItem *ecuitem, quint32 sec = 0, quint32 use = 0);
 
 protected:
-    void keyPressEvent ( QKeyEvent * event );
+    void keyPressEvent(QKeyEvent *event);
     void dragEnterEvent(QDragEnterEvent *event);
     void dropEvent(QDropEvent *event);
     void closeEvent(QCloseEvent *event);
@@ -404,8 +424,8 @@ private slots:
     void reloadLogFileFinishDefaultFilter();
     void triggerPluginsAutoload();
 
-    void onTableViewSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
-    void onSearchresultsTableSelectionChanged(const QItemSelection & selected, const QItemSelection & deselected);
+    void onTableViewSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+    void onSearchresultsTableSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
     void on_tableView_customContextMenuRequested(QPoint pos);
     void on_tableView_SearchIndex_customContextMenuRequested(QPoint pos);
@@ -420,7 +440,7 @@ private slots:
 
     void on_filterWidget_itemClicked(QTreeWidgetItem *item, int column);
 
-    void on_pluginWidget_itemExpanded(QTreeWidgetItem* item);
+    void on_pluginWidget_itemExpanded(QTreeWidgetItem *item);
 
     void on_pluginWidget_pluginPriorityChanged(const QString name, int prio);
 
@@ -430,7 +450,7 @@ private slots:
     void onShortcutHomePressed();
     void onShortcutEndPressed();
 
-// File methods
+    // File methods
 private slots:
 
     void on_action_menuFile_New_triggered();
@@ -535,7 +555,7 @@ private slots:
     void action_menuPlugin_Enable_triggered();
     void on_action_menuPlugin_Disable_triggered();
 
-    //Rename
+    // Rename
     void indexDone();
     void indexStart();
     void filterAdd();
@@ -603,7 +623,7 @@ private slots:
 
 public slots:
 
-    void sendInjection(int index,QString applicationId,QString contextId,int serviceId,QByteArray data);
+    void sendInjection(int index, QString applicationId, QString contextId, int serviceId, QByteArray data);
     void filterOrderChanged();
     void filterCountChanged();
     void jumpToMsgSignal(int index);
@@ -615,14 +635,13 @@ public slots:
     void reopenFileSignal();
 
     void controlMessage_Timezone(int timezone, unsigned char dst);
-    void controlMessage_UnregisterContext(QString ecuId,QString appId,QString ctId);
+    void controlMessage_UnregisterContext(QString ecuId, QString appId, QString ctId);
 
-    //History Slots
+    // History Slots
     void onAddActionToHistory();
     void onSearchProgressChanged(bool isInProgress);
 
 public:
-
     /* Project configuration containing ECU/APP/Context/Filter/Plugin configuration */
     Project project;
 
@@ -641,8 +660,7 @@ public:
     QDateTime startLoggingDateTime;
 
 signals:
-    void dltFileLoaded(const QStringList& paths);
-
+    void dltFileLoaded(const QStringList &paths);
 };
 
 #endif // MAINWINDOW_H

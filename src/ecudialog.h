@@ -23,11 +23,13 @@
 #include <QDialog>
 #include "project.h"
 
-namespace Ui {
+namespace Ui
+{
     class EcuDialog;
 }
 
-class EcuDialog : public QDialog {
+class EcuDialog : public QDialog
+{
     Q_OBJECT
 public:
     EcuDialog(QWidget *parent = 0);
@@ -70,6 +72,7 @@ public:
     void setIFpresetindex(int preset);
 
     void setDialogToEcuItem(EcuItem *item);
+
 protected:
     void changeEvent(QEvent *e);
 
