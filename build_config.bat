@@ -9,13 +9,6 @@ REM 5.12.12 msvc2015,msvc2017
 REM 5.15.2 msvc2015,msvc2019
 REM 6.2.2 msvc2019
 
-if "%QTVER%"=="" (
-REM    set QTVER=5.12.12
-    set QTVER=5.15.2
-REM    set QTVER=6.4.1
-REM    set QTVER=6.2.2
-)
-
 if "%MSVC_VER%"=="" (
 REM    set MSVC_VER=2015
 REM    set MSVC_VER=2017
@@ -32,10 +25,8 @@ if "%MSVC_VER%"=="2015" (
     )
 )
 
-echo Set QT directory for %QTVER% and %MSVC_VER%
-if "%QTDIR%"=="" (
-    set QTDIR=C:\Qt\%QTVER%\msvc%MSVC_VER%_64
-)
+for /f "delims=" %%I in ('where qmake') do set "QTDIR=%%~dpI"
+set "QTDIR=%QTDIR:~0,-5%"
 
 if "%QWT%"=="" (
     set QWT=6.1.4
