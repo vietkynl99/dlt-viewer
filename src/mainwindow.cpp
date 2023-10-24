@@ -5794,12 +5794,15 @@ void MainWindow::onLineEditSendDataTextChanged()
 
 void MainWindow::onShortcutHomePressed()
 {
+    scrollButton->setChecked(false);
+    on_actionAutoScroll_triggered(false);
     ui->tableView->scrollToTop();
 }
 
 void MainWindow::onShortcutEndPressed()
 {
-    ui->tableView->scrollToBottom();
+    scrollButton->setChecked(true);
+    on_actionAutoScroll_triggered(true);
 }
 
 void MainWindow::updateScrollButton()
