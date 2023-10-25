@@ -1864,10 +1864,6 @@ void MainWindow::on_action_menuFile_Clear_triggered()
         QFile dfile(oldfn);
         if (!dfile.remove())
         {
-            QMessageBox::critical(0, QString("DLT Viewer"),
-                                  QString("Cannot delete log file \"%1\"\n%2")
-                                      .arg(oldfn)
-                                      .arg(dfile.errorString()));
             qDebug() << QString("Cannot delete log file %1").arg(oldfn) << "in line" << __LINE__ << "of" << __FILE__;
         }
     }
