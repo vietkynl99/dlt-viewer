@@ -165,6 +165,9 @@ private:
     QLineEdit *searchTextbox;
     QComboBox *searchComboBox;
 
+    /* Send data */
+    QLineEdit *sendDataTextbox;
+
     /* injections */
     QString injectionAplicationId;
     QString injectionContextId;

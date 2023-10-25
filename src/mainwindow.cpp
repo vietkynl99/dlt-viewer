@@ -478,6 +478,10 @@ void MainWindow::initView()
     searchComboBox->setLineEdit(searchTextbox);
     searchComboBox->setInsertPolicy(QComboBox::InsertAtTop);
 
+    /* Send data */
+    sendDataTextbox = new QLineEdit();
+    ui->sendDataComboBox->setLineEdit(sendDataTextbox);
+
     /* Initialize toolbars. Most of the construction and connection is done via the
      * UI file. See mainwindow.ui, ActionEditor and Signal & Slots editor */
     QList<QAction *> mainActions = ui->mainToolBar->actions();
@@ -552,7 +556,11 @@ void MainWindow::initSignalConnections()
                     proxyModel->mapFromSource(fsModel->index(recentFiles[0]))); });
 
     // connect send data signal
-    connect(ui->lineEditSendData, SIGNAL(returnPressed()), this, SLOT(onLineEditSendDataTextChanged()));
+    connect(sendDataTextbox, SIGNAL(returnPressed()), this, SLOT(onLineEditSendDataTextChanged()));
+
+    // ui->sendDataComboBox->addItem("Value 1");
+    // ui->sendDataComboBox->addItem("Value 2");
+    // ui->sendDataComboBox->addItem("Value 3");
 }
 
 void MainWindow::initSearchTable()
@@ -5763,8 +5771,8 @@ void MainWindow::on_pluginWidget_pluginPriorityChanged(const QString name, int p
 
 void MainWindow::onLineEditSendDataTextChanged()
 {
-    QString text = ui->lineEditSendData->text();
-    ui->lineEditSendData->clear();
+    QString text = sendDataTextbox->text();
+    sendDataTextbox->clear();
     if (text.isEmpty())
     {
         return;
