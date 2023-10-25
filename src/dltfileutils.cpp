@@ -34,30 +34,12 @@ QString DltFileUtils::createTempFile(QDir path,  bool silentmode)
     //qDebug() << "Create " << file.fileName() << a;
     if(file.exists())
     {
-		if ( silentmode == true )
-		{
-	     qDebug() << "Temporary file " << file.fileName() << "already exists\n";
-	    }
-		else
-		{
-        QMessageBox::critical(0, QString("DLT Viewer"),
-                          QString("Temporary file %1\nalready exists !")
-                          .arg(file.fileName()));
-        }
+        qDebug() << "Temporary file " << file.fileName() << "already exists\n";
         return file.fileName();
     }
     if( false == file.open(QIODevice::ReadWrite) )
     {
-	if ( silentmode == true )
-		{
-         qDebug() << "Can not create temporary file " << file.fileName() << file.errorString();
-	    }
-		else
-		{
-        QMessageBox::critical(0, QString("DLT Viewer"),
-                          QString("Can not create temporary file !\n%1\n%2")
-                          .arg(file.fileName()).arg(file.errorString()));
-        }
+        qDebug() << "Can not create temporary file " << file.fileName() << file.errorString();
         return file.fileName();
     }
     file.close();
