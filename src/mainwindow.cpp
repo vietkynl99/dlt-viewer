@@ -4548,6 +4548,30 @@ void MainWindow::controlMessage_ReceiveControlMessage(EcuItem *ecuitem, QDltMsg 
     } // switch
 }
 
+void MainWindow::serialPortSendRawData(QString data)
+{
+    bool hasEcuConnected = false;
+    for (int num = 0; num < project.ecu->topLevelItemCount(); num++)
+    {
+        EcuItem *ecuitem = (EcuItem *)project.ecu->topLevelItem(num);
+        if (ecuitem->connected)
+        {
+            if (ecuitem->interfacetype != EcuItem::INTERFACETYPE_SERIAL_ASCII)
+            {
+                QMessageBox::warning(0, QString("DLT Viewer"), QString("Sending data is only supported in Serial ASCII mode!"));
+                return;
+            }
+            hasEcuConnected = true;
+            controlMessage_SendRawDataSerialPort(ecuitem, data);
+        }
+    }
+
+    if (!hasEcuConnected)
+    {
+        QMessageBox::warning(0, QString("DLT Viewer"), QString("No ECU selected in configuration!"));
+    }
+}
+
 void MainWindow::controlMessage_SendRawDataSerialPort(EcuItem *ecuitem, QString data)
 {
     // qDebug() << "Send data to serial port: " << data;
@@ -5770,26 +5794,7 @@ void MainWindow::onLineEditSendDataTextChanged()
     QString text = sendDataTextbox->text();
     sendDataTextbox->clear();
 
-    bool hasEcuConnected = false;
-    for (int num = 0; num < project.ecu->topLevelItemCount(); num++)
-    {
-        EcuItem *ecuitem = (EcuItem *)project.ecu->topLevelItem(num);
-        if (ecuitem->connected)
-        {
-            if (ecuitem->interfacetype != EcuItem::INTERFACETYPE_SERIAL_ASCII)
-            {
-                QMessageBox::warning(0, QString("DLT Viewer"), QString("Sending data is only supported in Serial ASCII mode!"));
-                return;
-            }
-            hasEcuConnected = true;
-            controlMessage_SendRawDataSerialPort(ecuitem, text);
-        }
-    }
-
-    if (!hasEcuConnected)
-    {
-        QMessageBox::warning(0, QString("DLT Viewer"), QString("No ECU selected in configuration!"));
-    }
+    serialPortSendRawData(text);
 }
 
 void MainWindow::onShortcutHomePressed()
@@ -7498,15 +7503,16 @@ void MainWindow::keyPressEvent(QKeyEvent *event)
 {
     if (event->matches(QKeySequence::Copy))
     {
-        if (ui->tableView->hasFocus())
-        {
-            exportSelection(true, false);
-        }
+        serialPortSendRawData("\003");
+        // if (ui->tableView->hasFocus())
+        // {
+        //     exportSelection(true, false);
+        // }
 
-        if (ui->tableView_SearchIndex->hasFocus())
-        {
-            exportSelection_searchTable();
-        }
+        // if (ui->tableView_SearchIndex->hasFocus())
+        // {
+        //     exportSelection_searchTable();
+        // }
     }
     if (event->matches(QKeySequence::Paste))
     {
