@@ -4550,7 +4550,7 @@ void MainWindow::controlMessage_ReceiveControlMessage(EcuItem *ecuitem, QDltMsg 
 
 void MainWindow::controlMessage_SendRawDataSerialPort(EcuItem *ecuitem, QString data)
 {
-    qDebug() << "Send data to serial port: " << data;
+    // qDebug() << "Send data to serial port: " << data;
     if (ecuitem->m_serialport && ecuitem->m_serialport->isOpen())
     {
         ecuitem->m_serialport->write(data.toUtf8().data());
@@ -5769,10 +5769,6 @@ void MainWindow::onLineEditSendDataTextChanged()
 {
     QString text = sendDataTextbox->text();
     sendDataTextbox->clear();
-    if (text.isEmpty())
-    {
-        return;
-    }
 
     bool hasEcuConnected = false;
     for (int num = 0; num < project.ecu->topLevelItemCount(); num++)

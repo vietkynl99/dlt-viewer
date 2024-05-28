@@ -8,7 +8,7 @@ IDI_ICON1               ICON    DISCARDABLE     "icon\org.genivi.DLTViewer.ico"
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-#include <winres.h>
+#include <afxres.h>
 
 LANGUAGE LANG_ENGLISH, SUBLANG_DEFAULT
 
